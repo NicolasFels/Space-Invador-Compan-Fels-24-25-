@@ -8,4 +8,8 @@ import tkinter as tk
 
 from Visuel import Visuel
 
-mf = Visuel
+# from Objet_spatial import Objet_spatial
+
+mf = Visuel()
+# test = Objet_spatial("bob", 5, 100, 100)
+# test.creation(test.x, test.y)
