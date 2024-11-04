@@ -19,8 +19,3 @@ class Visuel():
         self.button_quit.grid(column = 2, row = 0)
         self.canvas = tk.Canvas(root, width = 800, height = 800, bg = "black")
         self.canvas.grid(column = 0, columnspan = 3, row = 1)
-        
-
-root =tk.Tk()
-Fenetre = Visuel(root)
-root.mainloop()
