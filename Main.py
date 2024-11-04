@@ -6,9 +6,6 @@ A faire:
 """
 import tkinter as tk
 
-import Visuel as vs
+from Visuel import Visuel
 
-
-root = tk.Tk()
-Fenetre = vs.Visuel(root)
-root.mainloop()
+mf = Visuel
