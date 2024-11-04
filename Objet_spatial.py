@@ -6,7 +6,7 @@ But : création des différents objets spatiaux
 fait: rien
 """
 #Bibliotheque
-from tkinter import Event, Canvas
+from tkinter import Canvas
 #Classes
 class Objet_spatial():
     def __init__(self, nom, vitesse,x,y):
@@ -18,7 +18,7 @@ class Objet_spatial():
         self.y=y
 
     def creation (x, y):
-        Canvas.create_rectangle(x,y, x+10, y+10, fill='white')
+        Shape = Canvas.create_rectangle(x,y, x+10, y+10, fill='white')
 
 
     def collision ():
@@ -35,10 +35,13 @@ class Ennemis(Objet_spatial) :
     def deplacement_ennemis(position, dx) :
         while Objet_spatial.collision==False:
             Objet_spatial.x += dx
-        # self.y += dy
-
-
+        # self.y += dy       
 class Joueur(Objet_spatial):
     """gestion du joueur"""
-    def deplacement_joueur(event):
-        gauche=event
+    DIR={'Left':(-1,0),'Right':(1,0),'Up':(0,-1),'Down':(0,1)}
+    def deplacement_joueur(event,DIR):
+        key=event.keysym
+        dx, dy=DIR[key]
+
+
+
