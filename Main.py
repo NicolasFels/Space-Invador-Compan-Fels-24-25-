@@ -11,4 +11,4 @@ import Visuel as vs
 
 root = tk.Tk()
 Fenetre = vs.Visuel(root)
-root.mainloop
+root.mainloop()
