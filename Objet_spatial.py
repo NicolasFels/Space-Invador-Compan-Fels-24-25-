@@ -1,47 +1,30 @@
 """
 Compan Nolwenn
 04/11/2024
-But : création des différents objets spatiaux
-à faire : tout
-fait: rien
+But: création de la classes Objet_spatial
+        ->initialiser un model pour caracteriser tout les objets (nom, position, vitesse, taille, type)
+à faire : reflechir a quoi mettre d'autre
+fait: l'idee de base 
 """
 #Bibliotheque
-from tkinter import Canvas
-#Classes
+
+#Classe Objet_spatial
 class Objet_spatial():
-    def __init__(self, nom, vitesse,x,y):
-        """initialisation des variables"""
+    '''Classe de reference de tous les objets apparaissant a l\'ecran'''
+    def __init__(self, nom, type, positiony, positionx, taillex, tailley, vitessex, vitessey,):
+        '''caractere commun a tous les objets spatiaux.
+        nom = le nom de reference de l'entitee; type = -1 pour un ennemi, 0 pour un bloc de protection
+         et 1 pour le joueur; positions = refere la position du pixel haut gauche; tailles = refere la
+         taille de sa hit box; vitesses = sa vitesse de deplacement en x et en y.
+        '''
         self.nom = nom
-        self.vitesse = vitesse
-        self.collision=False
-        self.x=x
-        self.y=y
-
-    def creation (x, y):
-        Shape = Canvas.create_rectangle(x,y, x+10, y+10, fill='white')
-
-
-    def collision ():
-        """toutes les collisions"""
-
-        return
-  
-
-class Tir(Objet_spatial) :
-    """gestion des tirs"""
-    pass
-class Ennemis(Objet_spatial) :
-    """gestion des ennemis"""
-    def deplacement_ennemis(position, dx) :
-        while Objet_spatial.collision==False:
-            Objet_spatial.x += dx
-        # self.y += dy       
-class Joueur(Objet_spatial):
-    """gestion du joueur"""
-    DIR={'Left':(-1,0),'Right':(1,0),'Up':(0,-1),'Down':(0,1)}
-    def deplacement_joueur(event,DIR):
-        key=event.keysym
-        dx, dy=DIR[key]
+        self.type = type
+        self.positionx = positionx
+        self.positiony = positiony
+        self.taillex = taillex
+        self.tailley = tailley
+        self.vitessex = vitessex
+        self.vitessey = vitessey
 
 
 

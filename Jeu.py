@@ -1,17 +1,39 @@
 """
-NIcolas FELS
+Nicolas FELS
 04/11/2024
-But: Faire la classe Jeu du space invaders
-A faire: tout
+But: Creation de la classe jeu qui va gerer toutes les actions et reaction en jeu
+    ->Fonctions
+A faire: 
+    ->
+Fait: Rien
 """
-from Visuel import Visuel
+#Bibliotheques
+from Visuel import mv, score, fScore, fAffichage, fDeplacement, fSupprimer
 from Objet_spatial import Objet_spatial
 
+#Creation de la classe Jeu
 class Jeu():
-    def __init__(self,monvisuel):
-        self.creation("test", 5, 100, 100,monvisuel)
+    '''Gerer les actions, reactions et inter-actions durant une partie'''
+    def __init__(self,visuel):
+        '''Initialisation du jeu, mise a 0 du score et apparition du joueur et des protections'''
+        self.score = score
+        self.score = fScore(0, 0)
+        self.fCreation()
 
-    def creation(self,nom, vitesse, x, y,monvisuel):
-        #self.objet = Objet_spatial(nom, vitesse, x, y)
-        monvisuel.canvas.create_rectangle(x, y, x+10, y+10, fill="white")
-        
+    def fCreation(self,nom, type, positionx, positiony, taillex, tailley, vitessex, vitessey, visuel):
+        '''Fonction permettant la creation et l'affichage d'une entite.'''
+        self.objet = Objet_spatial("Joueur", 1, 680, 281, 10, 50, 0, 10)
+        fAffichage()
+
+    def fCollision():
+        '''Gere quand les hit box de 2 entitees se rencontre'''
+
+    def fTir():
+        '''Genere un tir du joueur comme d'un ennemi'''
+    
+    def fAction_joueur():
+        '''Active une reponse approprier a la commande du joueur'''
+
+    def fGestion_tour():
+        '''Regarde dans un ordre defini les actions qui se sont excutees pendant le tour et reagit
+        en consequences'''
