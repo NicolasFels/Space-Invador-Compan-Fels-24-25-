@@ -19,10 +19,13 @@ class Jeu():
         self.score = score
         self.score = fScore(0, 0)
         self.entity = []                        #Utilisation d'une liste, car plus simple pour stocker et acceder a n'importe quelle entitee
+        self.fCreation('Joueur', 1, (592, 281), (10, 50), (2, 2), visuel)
 
     def fCreation(self,nom, type, position, taille, vitesse, visuel):
         '''Fonction permettant la creation et l'affichage d'une entite.'''
-        self.entity.append(Objet_spatial(nom, type, position, taille, vitesse))
+        entity = Objet_spatial(nom, type, position, taille, vitesse)
+        self.entity.append(entity)
+        fAffichage(entity, visuel)
 
     def fCollision():
         '''Gere quand les hit box de 2 entitees se rencontre'''

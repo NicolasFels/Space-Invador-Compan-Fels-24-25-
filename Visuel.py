@@ -23,12 +23,13 @@ def fScore(Totpts : int, Newpts : int):
     Totpts += Newpts
     score.set('Score actuel: ' + str(Totpts))
 
-def fNewGame(visuel):
-    '''Fonction active du bouton new game. Creer une instance de jeu grace a la classe jeu.'''
-    mg = Jeu(visuel)
+#def fNewGame(visuel):
+#    '''Fonction active du bouton new game. Creer une instance de jeu grace a la classe jeu.'''
+#    mg = Jeu(visuel)
 
-def fAffichage(self, entity : list):
+def fAffichage(self, entity, visuel):
     '''Affiche les differents objets spatiaux sur le canvas'''
+    self.entity.position
 
 def fDeplacement():
     '''Deplace un objet de la variation indique'''
@@ -48,7 +49,7 @@ LabelScore = Label(mv, textvariable = score, borderwidth = 1, relief = 'raised')
 
 #Creation et configuration des boutons
 ButtonQuit = Button(mv, text = "QUITTER", command = mv.destroy)
-ButtonNewGame = Button(mv, text = "NEW GAME", command = fNewGame(mv))
+ButtonNewGame = Button(mv, text = "NEW GAME")
 
 #Creation et configuration du menu
 MenuBar = Menu(mv)
