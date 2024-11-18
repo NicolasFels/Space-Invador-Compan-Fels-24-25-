@@ -14,21 +14,21 @@ A faire:
 """
 #Librairies
 from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar
-from Jeu import Jeu
+from Classe_Jeu import Jeu
 
 #Fonctions
-def fScore(Totpts, Newpts):
+def fScore(Totpts : int, Newpts : int):
     '''Permet d'afficher en temps reel le score du joueur'''
     global score
     Totpts += Newpts
     score.set('Score actuel: ' + str(Totpts))
 
-def fNewGame():
+def fNewGame(visuel):
     '''Fonction active du bouton new game. Creer une instance de jeu grace a la classe jeu.'''
-    mg = Jeu(mv)
+    mg = Jeu(visuel)
 
-def fAffichage():
-    '''Affiche un objet (ennemi, allie, protection, tir) à la position indiqué'''
+def fAffichage(self, entity : list):
+    '''Affiche les differents objets spatiaux sur le canvas'''
 
 def fDeplacement():
     '''Deplace un objet de la variation indique'''
@@ -48,7 +48,7 @@ LabelScore = Label(mv, textvariable = score, borderwidth = 1, relief = 'raised')
 
 #Creation et configuration des boutons
 ButtonQuit = Button(mv, text = "QUITTER", command = mv.destroy)
-ButtonNewGame = Button(mv, text = "NEW GAME", command = fNewGame())
+ButtonNewGame = Button(mv, text = "NEW GAME", command = fNewGame(mv))
 
 #Creation et configuration du menu
 MenuBar = Menu(mv)
@@ -72,3 +72,6 @@ GameZone.pack(side = "bottom")
 ButtonNewGame.pack(side = "left", pady = 10)
 ButtonQuit.pack(side = "left", pady = 10)
 LabelScore.pack(side = 'left')
+
+
+mv.mainloop()

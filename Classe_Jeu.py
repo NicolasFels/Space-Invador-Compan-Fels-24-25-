@@ -9,7 +9,7 @@ Fait: Rien
 """
 #Bibliotheques
 from Visuel import mv, score, fScore, fAffichage, fDeplacement, fSupprimer
-from Objet_spatial import Objet_spatial
+from Classe_Objet_spatial import Objet_spatial
 
 #Creation de la classe Jeu
 class Jeu():
@@ -18,9 +18,11 @@ class Jeu():
         '''Initialisation du jeu, mise a 0 du score et apparition du joueur et des protections'''
         self.score = score
         self.score = fScore(0, 0)
+        self.entity = []                        #Utilisation d'une liste, car plus simple pour stocker et acceder a n'importe quelle entitee
 
     def fCreation(self,nom, type, position, taille, vitesse, visuel):
         '''Fonction permettant la creation et l'affichage d'une entite.'''
+        self.entity.append(Objet_spatial(nom, type, position, taille, vitesse))
 
     def fCollision():
         '''Gere quand les hit box de 2 entitees se rencontre'''
