@@ -8,7 +8,7 @@ But: Generer et gerer la fenetre graphique en tkinter
     ->fonction d'affichage d'un objet(ennemi, allie, autre)
 A faire:
     ->probleme sur l'image du canvas
-    ->ajouter fonctions menus (remplir texte et recommencer pour a propos)
+    ->ajouter fonctions menus (remplir texte)
 """
 #Librairies
 from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame
@@ -44,14 +44,20 @@ def fSupprimer(entity):
     '''Supprime du canvas l'objet designe'''
     GameZone.destroy(entity.forme)
 
-def create(): 
-    # Creation des fenetres du menu
+def create_regle(): # Creation des fenetres regle
     regle = Toplevel(mv)
     regle.title('Regles du jeu')
     TitreRegle = LabelFrame(regle, text = "Regles du jeu", padx = 20, pady = 20)
     TitreRegle.pack(fill = 'both', expand = 'yes')
-    Label(TitreRegle, text = "test").pack()
-    
+    Label(TitreRegle, text = "Vous savez jouer, non ?").pack()
+
+def create_nous():
+    nous = Toplevel(mv)
+    nous.title('A propos de nous')
+    TitreRegle = LabelFrame(nous, text = "A propos de nous", padx = 20, pady = 20)
+    TitreRegle.pack(fill = 'both', expand = 'yes')
+    Label(TitreRegle, text = "Nico et Nono").pack()
+
 #Fenetre
 #Creation et configuration de la fenetre
 mv = Tk()
@@ -74,8 +80,8 @@ MenuPropos = Menu(MenuBar, tearoff = 0)
 MenuBar.add_cascade(label = 'Fichier', menu = MenuFichier)
 MenuBar.add_cascade(label = 'A propos', menu = MenuPropos)
 MenuFichier.add_command(label = 'Quitter', command = mv.destroy)
-MenuPropos.add_command(label = 'Regles du jeu', command = create)
-MenuPropos.add_command(label = 'Sur nous')
+MenuPropos.add_command(label = 'Regles du jeu', command = create_regle)
+MenuPropos.add_command(label = 'Sur nous', command = create_nous)
 mv.config(menu = MenuBar)
 
 #Creation et configuration du Canvas
