@@ -11,7 +11,7 @@ fait: l'idee de base
 #Classe Objet_spatial
 class Objet_spatial():
     '''Classe de reference de tous les objets apparaissant a l\'ecran'''
-    def __init__(self, nom : str, type : int, position : tuple, taille : tuple, vitesse : tuple):
+    def __init__(self, nom : str, type : int, position : list, taille : tuple, vitesse : tuple):
         '''caractere commun a tous les objets spatiaux.
         nom = le nom de reference de l'entitee; type = -1 pour un ennemi, 0 pour un bloc de protection
          et 1 pour le joueur; positions = refere la position du pixel haut gauche; tailles = refere la
@@ -22,6 +22,8 @@ class Objet_spatial():
         self.position = position
         self.taille = taille
         self.vitesse = vitesse
+        self.forme
+
 
 
 
