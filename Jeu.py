@@ -18,12 +18,9 @@ class Jeu():
         '''Initialisation du jeu, mise a 0 du score et apparition du joueur et des protections'''
         self.score = score
         self.score = fScore(0, 0)
-        self.fCreation()
 
-    def fCreation(self,nom, type, positionx, positiony, taillex, tailley, vitessex, vitessey, visuel):
+    def fCreation(self,nom, type, position, taille, vitesse, visuel):
         '''Fonction permettant la creation et l'affichage d'une entite.'''
-        self.objet = Objet_spatial("Joueur", 1, 680, 281, 10, 50, 0, 10)
-        fAffichage()
 
     def fCollision():
         '''Gere quand les hit box de 2 entitees se rencontre'''
