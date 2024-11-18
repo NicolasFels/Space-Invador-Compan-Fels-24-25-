@@ -8,13 +8,12 @@ But: Generer et gerer la fenetre graphique en tkinter
     ->fonction d'affichage d'un objet(ennemi, allie, autre)
 A faire:
     ->probleme sur l'image du canvas
-    ->gerer positionnement des widgets et le format du labelscore
-    ->fonctions Affichage, Deplacement, Supprimer
-    ->ajouter fonctions menus
+    ->ajouter fonctions menus (remplir texte et recommencer pour a propos)
 """
 #Librairies
-from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar
-from Classe_Jeu import Jeu
+from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame
+# from PIL import ImageTk, Image
+# from Classe_Jeu import Jeu
 
 #Fonctions
 def fScore(Totpts : int, Newpts : int):
@@ -27,16 +26,32 @@ def fScore(Totpts : int, Newpts : int):
 #    '''Fonction active du bouton new game. Creer une instance de jeu grace a la classe jeu.'''
 #    mg = Jeu(visuel)
 
-def fAffichage(self, entity, visuel):
-    '''Affiche les differents objets spatiaux sur le canvas'''
-    self.entity.position
+def fAffichage(entity):
+    '''Affiche l'objet spatial sur le canvas -1 0 1'''
+    if entity.type == -1:
+        couleur = 'rouge'
+    elif entity.type == 0:
+        couleur = 'blanc'
+    elif entity.type == 1:
+        couleur = 'bleu'
+    entity.forme = GameZone.create_rectangle(entity.position[0], entity.position[1], entity.position[0] + entity.taille[0], entity.postion[1] + entity.taille[1])
 
-def fDeplacement():
-    '''Deplace un objet de la variation indique'''
+def fDeplace(entity):
+    '''Deplace un objet de la variation indiquee'''
+    GameZone.move(entity.forme, entity.vitesse[0], entity.vitesse[1])
 
-def fSupprimer():
+def fSupprimer(entity):
     '''Supprime du canvas l'objet designe'''
+    GameZone.destroy(entity.forme)
 
+def create(): 
+    # Creation des fenetres du menu
+    regle = Toplevel(mv)
+    regle.title('Regles du jeu')
+    TitreRegle = LabelFrame(regle, text = "Regles du jeu", padx = 20, pady = 20)
+    TitreRegle.pack(fill = 'both', expand = 'yes')
+    Label(TitreRegle, text = "test").pack()
+    
 #Fenetre
 #Creation et configuration de la fenetre
 mv = Tk()
@@ -45,7 +60,8 @@ mv.geometry('612x700')
 
 #Creation et configuration des Labels
 score = StringVar()
-LabelScore = Label(mv, textvariable = score, borderwidth = 1, relief = 'raised')
+fScore(0, 0)   #A suppr pour vrai fctionnement
+LabelScore = Label(mv, textvariable = score)
 
 #Creation et configuration des boutons
 ButtonQuit = Button(mv, text = "QUITTER", command = mv.destroy)
@@ -58,21 +74,20 @@ MenuPropos = Menu(MenuBar, tearoff = 0)
 MenuBar.add_cascade(label = 'Fichier', menu = MenuFichier)
 MenuBar.add_cascade(label = 'A propos', menu = MenuPropos)
 MenuFichier.add_command(label = 'Quitter', command = mv.destroy)
-MenuPropos.add_command(label = 'Regles du jeu')
+MenuPropos.add_command(label = 'Regles du jeu', command = create)
 MenuPropos.add_command(label = 'Sur nous')
 mv.config(menu = MenuBar)
 
 #Creation et configuration du Canvas
-GameZone = Canvas(mv, height = 612, width = 612, background='black')
-#background = PhotoImage(master = 'GameZone' ,file = 'image/BgBonbon.png')
-#GameZone.create_image(0, 0, image = background)
-#GameZone.image(background)
+# background = ImageTk.PhotoImage(Image.open('BgBonBon.gif'))
+GameZone = Canvas(mv, height = 612, width = 612, background = 'black')
+# GameZone.create_image(0, 0, image = background)
+# GameZone.Image(background)
 
 #Positionnement
 GameZone.pack(side = "bottom")
-ButtonNewGame.pack(side = "left", pady = 10)
-ButtonQuit.pack(side = "left", pady = 10)
-LabelScore.pack(side = 'left')
-
+ButtonNewGame.pack(side = "left", pady = 10, padx = 30)
+ButtonQuit.pack(side = "right", pady = 10, padx = 30)
+LabelScore.pack(side = 'top', pady =30)
 
 mv.mainloop()
