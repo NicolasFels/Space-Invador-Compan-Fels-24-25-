@@ -7,13 +7,12 @@ But: Generer et gerer la fenetre graphique en tkinter
     ->le canvas avec une image de fond
     ->fonction d'affichage d'un objet(ennemi, allie, autre)
 A faire:
+    ->transformer en classe
     ->probleme sur l'image du canvas
     ->ajouter fonctions menus (remplir texte)
 """
 #Librairies
 from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame
-# from PIL import ImageTk, Image
-# from Classe_Jeu import Jeu
 
 #Fonctions
 def fScore(Totpts : int, Newpts : int):
@@ -21,10 +20,6 @@ def fScore(Totpts : int, Newpts : int):
     global score
     Totpts += Newpts
     score.set('Score actuel: ' + str(Totpts))
-
-#def fNewGame(visuel):
-#    '''Fonction active du bouton new game. Creer une instance de jeu grace a la classe jeu.'''
-#    mg = Jeu(visuel)
 
 def fAffichage(entity):
     '''Affiche l'objet spatial sur le canvas -1 0 1'''
@@ -66,7 +61,6 @@ mv.geometry('612x700')
 
 #Creation et configuration des Labels
 score = StringVar()
-fScore(0, 0)   #A suppr pour vrai fctionnement
 LabelScore = Label(mv, textvariable = score)
 
 #Creation et configuration des boutons
@@ -85,15 +79,15 @@ MenuPropos.add_command(label = 'Sur nous', command = create_nous)
 mv.config(menu = MenuBar)
 
 #Creation et configuration du Canvas
-# background = ImageTk.PhotoImage(Image.open('BgBonBon.gif'))
+background = PhotoImage(file = 'image/BgCitrouille.png')
 GameZone = Canvas(mv, height = 612, width = 612, background = 'black')
-# GameZone.create_image(0, 0, image = background)
-# GameZone.Image(background)
+GameZone.create_image(0, 0, anchor = 'nw', image = background)
 
 #Positionnement
 GameZone.pack(side = "bottom")
 ButtonNewGame.pack(side = "left", pady = 10, padx = 30)
 ButtonQuit.pack(side = "right", pady = 10, padx = 30)
 LabelScore.pack(side = 'top', pady =30)
+
 
 mv.mainloop()

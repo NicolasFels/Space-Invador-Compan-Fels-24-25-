@@ -25,7 +25,7 @@ class Jeu():
         self.score = fScore(0, 0)
         self.entity = []                        #Utilisation d'une liste, car plus simple pour stocker et acceder a n'importe quelle entitee
         self.fCreation('Joueur', 1, (281, 572), (30, 50), (2, 2))
-        visuel.bind('<Key>', self.fAction_joueurAction(self.entity))
+        self.visuel.bind('<Key>', self.fAction_joueurAction(self.entity))
 
     def fCreation(self,nom, type, position, taille, vitesse):
         '''Fonction permettant la creation et l'affichage d'une entite.'''
