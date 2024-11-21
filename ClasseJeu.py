@@ -9,6 +9,7 @@ But: Creation de la classe jeu qui va gerer toutes les actions et reaction en je
     ->fScore
     ->fGestion_tour
 A faire: 
+    ->PB SUR AFFICHAGE PERSO AU DEBUT
     ->finir fAction
     ->tester le bon fonctionnement
     ->gerer le tir
@@ -21,17 +22,16 @@ Fait:
 """
 
 #Bibliotheque
-from tkinter import Canvas, Label, StringVar, PhotoImage
-
-from Classe_Objet_spatial import Objet_spatial
+from ClasseObjet_spatial import Objet_spatial
+from ClasseVisuel import Visuel
 
 #Classe Jeu
 class Jeu():
     '''Gere les actions, inter actions et reaction'''
-    def __init__(self, visuel):
+    def __init__(self):
         
         #Lien entre le jeu et le visuel
-        self.visuel = visuel
+        self.visuel = Visuel()
 
         #Mise a O du score du joueur
         self.visuel.Totalpts = 0
@@ -40,10 +40,9 @@ class Jeu():
         self.entity = []
 
         #Creation du joueur
-        #self.fCreation(1, 3, 0, [ , ], ( , ), [ , ])            ajouter les parametres de position, hitbox, vitesse du joueur
-
+        #self.fCreation(1, 3, 0, [300 , 300], (50 , 30), [1 , 0])            #modifier les parametres de tests 
         #Ajout des event
-        self.visuel.bind('<Key>', self.fAction_joueurAction(self.entity))
+        #self.visuel.bind('<Key>', self.fAction_joueurAction(self.entity))
 
     def fCreation(self, type : int, vie : int, valeur : int, position : list, hitbox : tuple, vitesse : list):
         '''Creer une entitee, l'ajoute a la liste des entitees et l'affiche a l'ecran'''
@@ -52,16 +51,8 @@ class Jeu():
         #Ajout dans la liste des entitees
         self.entity.append(objet)
         #Affichage dans le visuel
-        if type == -2:
-            apparence = PhotoImage(file = '../image/ennemi.png')
-        elif type == -1:
-            apparence = PhotoImage(file = '../image/tir.png')
-        elif type == 0:
-            apparence = PhotoImage(file = '../image/bloc.png')
-        elif type == 1:
-            apparence = PhotoImage(file = '../image/joueur.png')
-        objet.forme = self.visuel.GameZone.create_image(objet.position[0], objet.position[1], image = apparence)
-    
+        self.visuel.fAffichage(objet)
+            
     def fDeplacement(self, objet, sens, direction):
         '''Gere le deplacement dans la base de données de l'objet spatial, puis à l'écran.
         regarde en fonction du sens et de la direction si les parametres de l'entitee permettent'''
@@ -73,11 +64,9 @@ class Jeu():
             objet.position[direction] = 612
         elif objet.type == -1 and objet.position[direction] in [0, 612]:
             self.entity.remove(objet)
-            self.visuel.GameZone.delete(objet.forme)
-        if direction == 0:
-            self.visuel.GameZone.move(objet.forme, sens*objet.vitesse[direction], 0)
-        else:
-            self.visuel.GameZone.move(objet.forme, 0, sens*objet.vitesse[direction])
+            self.visuel.fSupprimer(objet)
+        #Deplacement sur la fenetre
+        self.visuel.fDeplace(objet, sens, direction)
 
     def fAction_joueur(self, event):
         '''Active une reponse appropriee a la commande du joueur'''

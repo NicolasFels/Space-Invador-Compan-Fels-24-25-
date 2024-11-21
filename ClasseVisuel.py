@@ -11,7 +11,7 @@ A faire:
     ->remplir les textes des menus
 '''
 #Bibliotheque
-from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame
+from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame, Event
 
 #Creation de la classe
 class Visuel():
@@ -21,7 +21,7 @@ class Visuel():
         #Definition des caracteristiques de base de la fenetre
         self.mv = Tk()
         self.mv.title('Compan and Fels: Space Invaders')
-        self.mv.geometry('612x650')                     #taille de la fenetre peut changer en fonction de l'image de fond
+        self.mv.geometry('612x700')                     #taille de la fenetre peut changer en fonction de l'image de fond
 
         #Creation des boutons
         self.buttonQuit = Button(self.mv, text = "QUITTER", command = self.mv.destroy)
@@ -44,15 +44,18 @@ class Visuel():
         self.mv.config(menu = self.MenuBar)
 
         #Creation du Canvas
-        self.GameZone = Canvas(self.mv, height = 612, width = 612, background = 'black')
-        #background = PhotoImage(file = '../image/')                        Probleme pour l'image -> trouver une image en .png
-        #self.GameZone.create_image(0, 0, anchor = 'nw', image = background)
+        self.GameZone = Canvas(self.mv, height = 612, width = 612)
+        background = PhotoImage(file = 'background.gif')                        #Probleme pour l'image -> trouver une image en .png
+        self.GameZone.create_image(0, 0, anchor = 'nw', image = background)
 
         #Positionnement des widget
         self.GameZone.pack(side = "bottom")
         self.buttonNewGame.pack(side = "left", pady = 10, padx = 30)
         self.buttonQuit.pack(side = "right", pady = 10, padx = 30)
         self.labelScore.pack(side = 'top', pady =30)
+
+        #Pour faire boucler la fenetre
+        self.mv.mainloop()
 
     def fCreate_regle(self): # Creation des fenetres regle
         regle = Toplevel(self.mv)
@@ -67,3 +70,26 @@ class Visuel():
         TitreRegle = LabelFrame(nous, text = "A propos de nous", padx = 20, pady = 20)
         TitreRegle.pack(fill = 'both', expand = 'yes')
         Label(TitreRegle, text = "Nico et Nono").pack()
+
+    def fAffichage(self, objet):
+        '''Affiche l'objet demandé'''
+        if objet.type == -2:
+            apparence = PhotoImage(file = 'ennemi.gif')
+        elif objet.type == -1:
+            apparence = PhotoImage(file = 'tir.png')
+        elif objet.type == 0:
+            apparence = PhotoImage(file = 'bloc.png')
+        elif objet.type == 1:
+            apparence = PhotoImage(file = 'joueur.png')
+        objet.forme = self.GameZone.create_image(objet.position[0], objet.position[1], image = apparence)
+    
+    def fDeplace(self, objet, sens, direction):
+        '''Deplace l'objet sur la fenetre'''
+        if direction == 0:
+            self.visuel.GameZone.move(objet.forme, sens*objet.vitesse[direction], 0)
+        else:
+            self.visuel.GameZone.move(objet.forme, 0, sens*objet.vitesse[direction])
+    
+    def fSupprimer(self, objet):
+        '''Supprime l'objet de l'écran'''
+        self.GameZone.delete(objet.forme)

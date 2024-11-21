@@ -8,7 +8,4 @@ A faire:
 from ClasseVisuel import Visuel
 from ClasseJeu import Jeu
 
-mv = Visuel()
-mg = Jeu(mv)
-
-mv.mainloop
+mg = Jeu()
