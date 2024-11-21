@@ -1,6 +1,6 @@
 '''
 Nicolas Fels
-Derniere modification: 20/11/2024
+Derniere modification: 21/11/2024
 But: Programme main du jeu space invader
 A faire:
 '''
@@ -8,4 +8,6 @@ A faire:
 from ClasseVisuel import Visuel
 from ClasseJeu import Jeu
 
-mg = Jeu()
+mv = Visuel()
+mg = Jeu(mv)
+mv.mainloop()

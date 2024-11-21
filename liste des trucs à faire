@@ -1,0 +1,18 @@
+Visuel
+    mettre les bonnes images
+    mettre texte menu
+    fNewGame
+
+Jeu
+    pb fCreation trop rapide (RuntimeError: Too early to create image: no default root window) ->plus de run time mais tjs pb ça n apparait pas
+    pb bind (AttributeError: 'Visuel' object has no attribute 'bind') -> faire fct connexe sur Visuel
+    ajouter le tir
+    fGestionTour
+    finir fActionJoueur
+
+Main
+    ecrire correctement -> fait
+
+Autre
+    reflechir buffer
+    game over

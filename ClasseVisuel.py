@@ -1,17 +1,19 @@
 '''
 Nicolas Fels
-Derniere modification: 20/11/2024
+Derniere modification: 21/11/2024
 But: Creation d'une classe Visuel pour creer des fenetres
     ->boutons QUITTER et NEWGAME
     ->label SCORE variable
     ->canvas GameZone avec une image de fond
     ->menubar avec une zone Fichier et une zone A propos
 A faire:
-    ->resoudre le probleme de l'image
+    ->comprendre pk fAffiche ne fonctionne pas
+    ->mettre les bonnes images
     ->remplir les textes des menus
+    ->faire la fonction fNewGame
 '''
 #Bibliotheque
-from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Frame, Event
+from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame
 
 #Creation de la classe
 class Visuel():
@@ -28,7 +30,6 @@ class Visuel():
         self.buttonNewGame = Button(self.mv, text = "NEW GAME")
 
         #Creation des labels 
-        self.Totalpts = 0
         self.score = StringVar()
         self.labelScore = Label(self.mv, textvariable = self.score)      #Amener a changer pour etre traiter par Jeu
 
@@ -45,17 +46,14 @@ class Visuel():
 
         #Creation du Canvas
         self.GameZone = Canvas(self.mv, height = 612, width = 612)
-        background = PhotoImage(file = 'background.gif')                        #Probleme pour l'image -> trouver une image en .png
-        self.GameZone.create_image(0, 0, anchor = 'nw', image = background)
+        self.background = PhotoImage(file = 'background.gif')                        #Probleme pour l'image -> trouver une image en .png
+        self.GameZone.create_image(0, 0, anchor = 'nw', image = self.background)
 
         #Positionnement des widget
         self.GameZone.pack(side = "bottom")
         self.buttonNewGame.pack(side = "left", pady = 10, padx = 30)
         self.buttonQuit.pack(side = "right", pady = 10, padx = 30)
         self.labelScore.pack(side = 'top', pady =30)
-
-        #Pour faire boucler la fenetre
-        self.mv.mainloop()
 
     def fCreate_regle(self): # Creation des fenetres regle
         regle = Toplevel(self.mv)
@@ -70,6 +68,13 @@ class Visuel():
         TitreRegle = LabelFrame(nous, text = "A propos de nous", padx = 20, pady = 20)
         TitreRegle.pack(fill = 'both', expand = 'yes')
         Label(TitreRegle, text = "Nico et Nono").pack()
+
+    def fBindKey(self, function):
+        self.mv.bind('<Key>', function)
+    
+    def fNewGame(self):
+        '''Fonction associer au bouton NEWGAME, reset la page et lance un nouveau jeu'''
+        pass
 
     def fAffichage(self, objet):
         '''Affiche l'objet demandé'''
@@ -93,3 +98,6 @@ class Visuel():
     def fSupprimer(self, objet):
         '''Supprime l'objet de l'écran'''
         self.GameZone.delete(objet.forme)
+        
+    def mainloop(self):
+        self.mv.mainloop()

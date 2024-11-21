@@ -1,6 +1,6 @@
 """
 Nicolas FELS
-Derniere modification: 20/11/2024
+Derniere modification: 21/11/2024
 But: Creation de la classe jeu qui va gerer toutes les actions et reaction en jeu
     ->fCreation
     ->fCollision
@@ -9,7 +9,7 @@ But: Creation de la classe jeu qui va gerer toutes les actions et reaction en je
     ->fScore
     ->fGestion_tour
 A faire: 
-    ->PB SUR AFFICHAGE PERSO AU DEBUT
+    ->PB SUR AFFICHAGE PERSO AU DEBUT et BIND
     ->finir fAction
     ->tester le bon fonctionnement
     ->gerer le tir
@@ -28,21 +28,22 @@ from ClasseVisuel import Visuel
 #Classe Jeu
 class Jeu():
     '''Gere les actions, inter actions et reaction'''
-    def __init__(self):
+    def __init__(self, mv):
         
         #Lien entre le jeu et le visuel
-        self.visuel = Visuel()
+        self.visuel = mv
 
         #Mise a O du score du joueur
-        self.visuel.Totalpts = 0
+        self.Totalpts = 0
         
         #Creation de la liste des entitees
         self.entity = []
 
         #Creation du joueur
-        #self.fCreation(1, 3, 0, [300 , 300], (50 , 30), [1 , 0])            #modifier les parametres de tests 
+        self.fCreation(1, 3, 0, [300 , 300], (50 , 30), [1 , 0])            #modifier les parametres de tests 
+
         #Ajout des event
-        #self.visuel.bind('<Key>', self.fAction_joueurAction(self.entity))
+        #self.visuel.fBindKey(self.fAction_joueur(self.entity))
 
     def fCreation(self, type : int, vie : int, valeur : int, position : list, hitbox : tuple, vitesse : list):
         '''Creer une entitee, l'ajoute a la liste des entitees et l'affiche a l'ecran'''
@@ -95,11 +96,12 @@ class Jeu():
             collision = True
         if collision == True:
             self.entity.remove(objet1, objet2)
-            self.visuel.GameZone.delete(objet1.forme, objet2.forme)
+            self.visuel.fSupprimer(objet1)
+            self.visuel.fSupprimer(objet2)
     
     def fScore(self, Newpts : int):
         '''Permet d'afficher en temps reel le score du joueur'''
-        self.visuel.Totalpts += Newpts
+        self.Totalpts += Newpts
         self.visuel.score.set('Score actuel: ' + str(self.Totalpts))
 
     def fGestionTour(self):
