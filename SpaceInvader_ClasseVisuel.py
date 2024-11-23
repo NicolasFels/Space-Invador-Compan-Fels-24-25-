@@ -3,12 +3,13 @@ Nicolas FELS, Nolwenn COMPAN
 Derniere modification: 23/11/2024
 But: Realiser une classe permettant la creation d'une fenetre graphique de jeu;
 Fait: Initialisation de la fenetre avec tous les parametres actuellement utile;
-    methodes des boutons et menus;
-    methodes propre au Canvas;
+    methodes des boutons, labels et menus;
+    methodes standard propre au Canvas GameZone;
+    debut des methodes avances propre au Canvas GameZone;
     methode d'ecoute du clavier fAction;
-    methode de fonctionnement fMainloop();
 A faire: Rajouter les bonnes images pour les ennemi speciaux, les tirs et les blocs;
-    voir si on modifie l'apparence des boutons
+    realisation des methode de gestion de tour et d'execution du jeu;
+    voir si on modifie l'apparence des boutons;
     reflechir sur ajout d'option start/stop/reprise du jeu en cours en lien avec la classe Jeu;
     reflechir a differentes ameliorations possibles;
 '''
@@ -78,10 +79,12 @@ class Visuel():
 
         #Apparition du joueur sur le Canvas GameZone
         self.fAffichage(self.mg.joueur)
+
+        #Apparition des ennemis sur le Canvas
+        self.fAffichageVague()
         
         #Creation des evenements
         self.mv.bind('<Key>', self.fActionJoueur)
-
         #Lancement de la fenetre
         self.mv.mainloop()
 
@@ -122,7 +125,7 @@ class Visuel():
             self.valeurbestscore = self.valeurscore
             self.bestscore.set('Score actuel: ' + str(self.valeurbestscore))
     
-    #Methodes propre au Canvas GameZone
+    #Methodes standards propre au Canvas GameZone
     def fAffichage(self, objet):
         '''Affiche l'objet sur le Canvas GameZone'''
         if objet.type == 1:
@@ -141,14 +144,39 @@ class Visuel():
     def fDeplace(self, objet, direction : int, sens : int):
         '''Deplace l'objet sur le Canvas GameZone selon une direction et un sens precis'''
         if direction == 0:
-            self.GameZone.move(objet.id, sens*objet.vitesse[direction], 0)
+            self.GameZone.move(objet.id, sens * objet.vitesse[direction], 0)
         else:
-            self.GameZone.move(objet.id, 0, sens*objet.vitesse[direction])
+            self.GameZone.move(objet.id, 0, sens * objet.vitesse[direction])
     
     def fSupprimer(self, objet):
         '''Supprime l'objet de l'écran'''
         self.entityId.remove(objet.id)
         self.GameZone.delete(objet.id)
+    
+    #Methodes avances propre au Canvas GameZone
+    def fMoveEnnemi(self):
+        '''Deplace tous les ennemis sur le Canvas GameZone selon une direction et un sens precis'''
+        if self.mg.ennemiou == 0:
+            for entity in self.mg.ennemis:
+                self.fDeplace(entity, 0, 1)
+        elif self.mg.ennemiou == 1:
+            for entity in self.mg.ennemis:
+                self.fDeplace(entity, 0, -1)
+        elif self.mg.ennemiou == 2:
+            for entity in self.mg.ennemis:
+                self.fDeplace(entity, 1, 1)
+    
+    def fMoveTir(self):
+        '''Deplace tous les tir sur le Canvas GameZone selon une direction et un sens precis'''
+        for entity in self.mg.tirs:
+            self.fDeplace(entity, 1, 1)
+
+    def fAffichageVague(self):
+        '''Affiche tous les ennemis de la nouvelle vague sur le Canvas GameZone'''
+        if self.mg.besoinVague == True:
+            for entity in self.mg.ennemis:
+                self.fAffichage(entity)
+            self.mg.besoinVague = False
     
     #Methode d'ecoute des inputs du joueur
     def fActionJoueur(self, event):
@@ -161,7 +189,8 @@ class Visuel():
             self.mg.fDeplacement(self.mg.joueur, 0, 1)
             self.fDeplace(self.mg.joueur, 0, 1)
         elif action == 'space':
-            self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 20, self.mg.joueur.position[1] - 6], (5, 5), [0, 10])
-            self.fAffichage(self.mg.entity[-1])
-
-           
+            self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 20, self.mg.joueur.position[1] - 6], (5, 5), [0, -10])
+            self.fAffichage(self.mg.tirs[-1])
+    
+    #Methode gestion du tour
+    
