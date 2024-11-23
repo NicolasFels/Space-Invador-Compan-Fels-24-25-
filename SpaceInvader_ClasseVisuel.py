@@ -21,20 +21,27 @@ from SpaceInvader_ClasseObjetSpatial import ObjetSpatial
 #Creation de la classe Visuel
 class Visuel():
     '''Permet la creation d'une fenetre visuelle de jeu'''
-    def __init__(self):
+    def __init__(self, mg):
         '''Initialisation de la fenetre'''
         #Definition des caracteristiques de base de la fenetre
         self.mv = Tk()
         self.mv.title('Compan and Fels: Space Invaders')
         self.mv.geometry('612x700')
 
+        #Lien entre le jeu et la fenetre graphique
+        self.mg = mg
+
         #Creation des boutons
         self.buttonQuit = Button(self.mv, text = "QUITTER", command = self.mv.destroy)
         self.buttonNewGame = Button(self.mv, text = "NEW GAME", command = self.fNewGame)
 
-        #Creation des labels 
+        #Creation des labels de score
+        self.valeurscore = 0
+        self.valeurbestscore = 0
         self.score = StringVar()
-        self.labelScore = Label(self.mv, textvariable = self.score)     #Amener a changer selon comment est gerer le score
+        self.bestscore = StringVar()
+        self.labelScore = Label(self.mv, textvariable = self.score)             #Amener a changer selon comment est gerer le score
+        self.labelBestScore = Label(self.mv, textvariable = self.bestscore)     #Amener a changer selon comment est gerer le score
 
         #Creation du menu
         self.MenuBar = Menu(self.mv)
@@ -57,24 +64,29 @@ class Visuel():
         self.buttonNewGame.pack(side = "left", pady = 10, padx = 30)
         self.buttonQuit.pack(side = "right", pady = 10, padx = 30)
         self.labelScore.pack(side = 'top', pady =30)
-
-        #Creation des evenements et variables d'ecoute
-        self.NewGame = False
-        self.ActionJoueur = None
-        self.mv.bind('<Key>', self.fAction)
+        self.labelBestScore.pack(side = 'top', padx = 20)                       #Amener a changer en fonction du rendu
 
         #Creation des apparences des entitees
         self.joueur = PhotoImage(file = 'SpaceInvader_Image/tooth.png')
         self.ennemi = PhotoImage(file = 'SpaceInvader_Image/candy.png')
         self.ennemispecial = PhotoImage(file = 'SpaceInvader_Image/candy.png')
-        self.tir = PhotoImage(file = 'SpaceInvader_Image/candy.png')        #Changer l'image quand on l'aura
-        self.bloc = PhotoImage(file = 'SpaceInvader_Image/candy.png')       #Changer l'image quand on l'aura
+        self.tir = PhotoImage(file = 'SpaceInvader_Image/candy.png')            #Changer l'image quand on l'aura
+        self.bloc = PhotoImage(file = 'SpaceInvader_Image/candy.png')           #Changer l'image quand on l'aura
 
         #Creation d'une liste des entitees affichee
         self.entityId = []
 
+        #Apparition du joueur sur le Canvas GameZone
+        self.fAffichage(self.mg.joueur)
+        
+        #Creation des evenements
+        self.mv.bind('<Key>', self.fActionJoueur)
+
+        #Lancement de la fenetre
+        self.mv.mainloop()
+
     #Creation des methodes
-    #Methode propre aux menus et boutons
+    #Methode propre aux menus, boutons et labels
     def fCreate_regle(self):
         '''Creation d'une fenetre contenant les regles du jeu depuis le MenuPropos'''
         regle = Toplevel(self.mv)
@@ -93,9 +105,24 @@ class Visuel():
 
     def fNewGame(self):
         '''Associer au bouton NEWGAME, met la valeur True au parametre NewGame.'''
-        self.NewGame = True
+        for id in self.entityId:
+            self.GameZone.delete(id)
+        self.mg.fReset()
+        self.valeurscore = 0
+        self.fScore()
+
+    def fScore(self):
+        '''Modifie en temps reel le score affiche du joueur'''
+        self.valeurscore = self.mg.Totpts
+        self.score.set('Score actuel: ' + str(self.valeurscore))
     
-    #Methode propre au Canvas
+    def fBestScore(self):
+        '''Modifie le meilleur score en temps reel s'il est inferieur au score actuel du joueur'''
+        if self.valeurbestscore < self.valeurscore:
+            self.valeurbestscore = self.valeurscore
+            self.bestscore.set('Score actuel: ' + str(self.valeurbestscore))
+    
+    #Methodes propre au Canvas GameZone
     def fAffichage(self, objet):
         '''Affiche l'objet sur le Canvas GameZone'''
         if objet.type == 1:
@@ -112,24 +139,29 @@ class Visuel():
         self.entityId.append(objet.id)
     
     def fDeplace(self, objet, direction : int, sens : int):
-        '''Deplace l'objet sur la fenetre'''
+        '''Deplace l'objet sur le Canvas GameZone selon une direction et un sens precis'''
         if direction == 0:
             self.GameZone.move(objet.id, sens*objet.vitesse[direction], 0)
         else:
             self.GameZone.move(objet.id, 0, sens*objet.vitesse[direction])
-
+    
     def fSupprimer(self, objet):
         '''Supprime l'objet de l'écran'''
+        self.entityId.remove(objet.id)
         self.GameZone.delete(objet.id)
-
-    #Methode d'ecoute du clavier
-    def fAction(self, event):
-        '''Change l'attribut de l'action joueur en fonction de la touche appuyer'''
-        self.ActionJoueur = event.keysym
-        print(self.ActionJoueur)
     
-    #Methode pour faire fonctionner la fenetre
-    def fMainloop(self):
-        '''Necessaire pour faire tourner la fenetre apres l'avoir liee au jeu'''
-        self.mv.mainloop()
+    #Methode d'ecoute des inputs du joueur
+    def fActionJoueur(self, event):
+        action = event.keysym
+        print(action)
+        if action == 'Left':
+            self.mg.fDeplacement(self.mg.joueur, 0, -1)
+            self.fDeplace(self.mg.joueur, 0, -1)
+        elif action == 'Right':
+            self.mg.fDeplacement(self.mg.joueur, 0, 1)
+            self.fDeplace(self.mg.joueur, 0, 1)
+        elif action == 'space':
+            self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 20, self.mg.joueur.position[1] - 6], (5, 5), [0, 10])
+            self.fAffichage(self.mg.entity[-1])
 
+           

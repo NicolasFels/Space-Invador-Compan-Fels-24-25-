@@ -1,7 +1,7 @@
 '''
 Nicolas FELS, Nolwenn COMPAN
 Derniere modification: 23/11/2024
-But: Realiser un classe Jeu permettant de generer et gerer l'instance du jeu ainsi que toutes les actions et reactions;
+But: Realiser un classe Jeu permettant de generer et gerer les donnees du jeu;
 Fait: Initialisation du jeu;
     methode de creation des entitees;
     methode de suppression des entitees si plus de vie;
@@ -20,43 +20,63 @@ from SpaceInvader_ClasseObjetSpatial import ObjetSpatial
 
 #Creation de la classe
 class Jeu():
-    '''Permet la creation de l'instance du jeu, ainsi que de definir les methodes necessaires au fonctionnement du jeu'''
-    def __init__(self, visuel):
+    '''Permet la creation de l'instance du jeu, ainsi que de definir les methodes necessaires
+    au traitement des donnees durant le jeu'''
+    def __init__(self):
         '''Initialise l'instance du jeu'''
-        #Lien entre l'instance de jeu et la fenetre graphique
-        self.visuel = visuel
-
         #Mise a 0 du score
         self.Totpts = 0
-        self.Newpts = 0
-        self.fScore()
 
         #Creation et affichage du joueur
-        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [5, 0])   #Valeurs de tests amener a changer
-        self.visuel.fAffichage(self.joueur)
+        self.joueur = ObjetSpatial(1, 3, 0, [281, 572], (50, 30), [5, 0])   #Valeurs de tests amener a changer
         
         #Creation de la liste des entitees autres que le joueur
         self.entity = []
 
-        #Les events
-        self.fActionJoueur()
-        
+        #Creation des lignes ennemis
+        self.lignespeciaux = []
+        self.ligne1 = []
+        self.ligne2 = []
+        self.ligne3 = []
+        self.ligne4 = []
+        self.ligne5 = []
+        self.ligne6 = []
+        self.ligne7 = []
+
+        #Creation des etats de fonctionnement
+        self.gameover = False
 
     #Creation des methodes
+    #Methodes de gestion des entitees
     def fCreation(self, type : int, vie : int, valeur : int, position : list, hitbox : tuple, vitesse : list):
         '''Creation d'un objet spatial et ajout a la liste des entitees du jeu'''
         #Creation de l'entitee
         objet = ObjetSpatial(type, vie, valeur, position, hitbox, vitesse)
         #Ajout dans la liste des entitees
         self.entity.append(objet)
-        #Affichage dans la fenetre graphique
-        self.visuel.fAffichage(objet)
-
+    
     def fSuppression(self, objet):
-        '''Supprime l'objet de la liste des entitees si sa vie tombe a 0'''
+        '''Supprime l'objet de la liste des entitees si sa vie tombe a 0 et ajoute ses points a Totpts'''
         if objet.vie == 0:
+            self.Totpts += objet.valeur
             self.entity.remove(objet)
-            self.visuel.fSupprimer(objet)
+    
+    def fCollision(self, objet1, objet2):
+        '''Verifie si les hitbox de 2 objet se rencontre, si oui enleve une vie au deux objets'''
+        collision = False
+        #Tests s'il y a collision entre 2 objets
+        if objet1.position[0] <= objet2.position[0] and objet2.position[0] <= objet1.position[0] + objet1.taille[0]:
+            collision = True
+        elif objet1.position[0] <= objet2.position[0] + objet2.taille[0] and objet2.position[0] + objet2.taille[0] <= objet1.position[0] + objet1.taille[0]:
+            collision = True
+        elif objet1.position[1] <= objet2.position[1] and objet2.position[1] <= objet1.position[1] + objet1.taille[1]:
+            collision = True
+        elif objet1.position[1] <= objet2.position[1] + objet2.taille[1] and objet2.position[1] + objet2.taille[1] <= objet1.position[0] + objet1.taille[0]:
+            collision = True
+        #En cas de collision enleve une vie aux 2 objets
+        if collision == True:
+            objet1.vie -= 1
+            objet2.vie -= 1
 
     def fDeplacement(self, objet, direction : int, sens : int):
         '''Modifie la position d'un objet en fonction de sa vitesse, de la direction et du sens souhaitee.
@@ -71,50 +91,28 @@ class Jeu():
             objet.position[direction] = 612
         if objet.type == -1 and objet.position[direction] in [0, 612]:
             objet.vie -= 1
-        #Deplacement dans la fenetre graphique
-        self.visuel.fDeplace(objet, direction, sens)
     
-    def fActionJoueur(self):
-        '''Active une reaction en fonction d'une action du joueur sur le clavier'''
-        if self.visuel.ActionJoueur == 'Left':
-            self.fDeplacement(self.joueur, 0, -1)
-        elif self.visuel.ActionJoueur == 'Right':
-            self.fDeplacement(self.joueur, 0, 1)
-        elif self.visuel.ActionJoueur == 'space':
-            self.fCreation(-1, 1, 0, [self.joueur.position[0] + 20, self.joueur.position[1] - 6], (5, 5), [0, 10])
-        print(self.visuel.ActionJoueur, 'Jeu')
-
-    def fCollision(self, objet1, objet2):
-        '''Verifie si les hitbox de 2 objet se rencontre, si oui enleve une vie au deux objets'''
-        collision = False
-        if objet1.position[0] <= objet2.position[0] and objet2.position[0] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        elif objet1.position[0] <= objet2.position[0] + objet2.taille[0] and objet2.position[0] + objet2.taille[0] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        elif objet1.position[1] <= objet2.position[1] and objet2.position[1] <= objet1.position[1] + objet1.taille[1]:
-            collision = True
-        elif objet1.position[1] <= objet2.position[1] + objet2.taille[1] and objet2.position[1] + objet2.taille[1] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        if collision == True:
-            objet1.vie -= 1
-            objet2.vie -= 1
-
-    def fScore(self):
-        '''Permet de modifier le score, puis de changer son affichage dans la fenetre graphique'''
-        self.Totpts += self.Newpts
-        self.visuel.score.set('Score actuel: ' + str(self.Totpts))
-        self.Newpts = 0
-    
+    #Methode de fonctionnement
     def fReset(self):
-        '''Permet de reset toutes les donnees du jeu, ainsi que l'affichage dans la fenetre graphique'''
-        #Suppression de toutes les donnees et de tous les objets afficher
-        for objet in self.entity:
-            self.visuel.fSupprimer(objet)
-        self.visuel.fSupprimer(self.joueur)
-        #Mise a 0 des parametres du jeu
+        '''Remets a leur valeur d'origine tous les parametres du jeu'''
+        #Mise a 0 du score
         self.Totpts = 0
-        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [2, 0])   #Valeurs de tests amener a changer
-        self.visuel.fAffichage(self.joueur)
+
+        #Creation et affichage du joueur
+        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [5, 0])   #Valeurs de tests amener a changer
+        
+        #Creation de la liste des entitees autres que le joueur
         self.entity = []
-        #Mis a l'etat False du parametre NewGame pour signifier qu'on a creert un nouveau jeu
-        self.visuel.NewGame = False
+
+        #Creation des lignes ennemis
+        self.lignespeciaux = []
+        self.ligne1 = []
+        self.ligne2 = []
+        self.ligne3 = []
+        self.ligne4 = []
+        self.ligne5 = []
+        self.ligne6 = []
+        self.ligne7 = []
+
+        #Creation des etats de fonctionnement
+        self.gameover = False

@@ -10,6 +10,5 @@ from SpaceInvader_ClasseVisuel import Visuel
 from SpaceInvader_ClasseJeu import Jeu
 
 #Lancement de la fenetre graphique et du jeu
-mv = Visuel()
-mg = Jeu(mv)
-mv.fMainloop()
+mg = Jeu()
+mv = Visuel(mg)
