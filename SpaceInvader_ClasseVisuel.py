@@ -126,6 +126,7 @@ class Visuel():
     def fAction(self, event):
         '''Change l'attribut de l'action joueur en fonction de la touche appuyer'''
         self.ActionJoueur = event.keysym
+        print(self.ActionJoueur)
     
     #Methode pour faire fonctionner la fenetre
     def fMainloop(self):

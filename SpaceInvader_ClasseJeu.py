@@ -28,6 +28,8 @@ class Jeu():
 
         #Mise a 0 du score
         self.Totpts = 0
+        self.Newpts = 0
+        self.fScore()
 
         #Creation et affichage du joueur
         self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [5, 0])   #Valeurs de tests amener a changer
@@ -35,6 +37,9 @@ class Jeu():
         
         #Creation de la liste des entitees autres que le joueur
         self.entity = []
+
+        #Les events
+        self.fActionJoueur()
         
 
     #Creation des methodes
@@ -69,14 +74,15 @@ class Jeu():
         #Deplacement dans la fenetre graphique
         self.visuel.fDeplace(objet, direction, sens)
     
-    def fActionJoueur(self, action):
+    def fActionJoueur(self):
         '''Active une reaction en fonction d'une action du joueur sur le clavier'''
-        if action == 'LEFT':
+        if self.visuel.ActionJoueur == 'Left':
             self.fDeplacement(self.joueur, 0, -1)
-        elif action == 'RIGHT':
+        elif self.visuel.ActionJoueur == 'Right':
             self.fDeplacement(self.joueur, 0, 1)
-        elif action == 'Space':
+        elif self.visuel.ActionJoueur == 'space':
             self.fCreation(-1, 1, 0, [self.joueur.position[0] + 20, self.joueur.position[1] - 6], (5, 5), [0, 10])
+        print(self.visuel.ActionJoueur, 'Jeu')
 
     def fCollision(self, objet1, objet2):
         '''Verifie si les hitbox de 2 objet se rencontre, si oui enleve une vie au deux objets'''
@@ -93,10 +99,11 @@ class Jeu():
             objet1.vie -= 1
             objet2.vie -= 1
 
-    def fScore(self, Newpts : int):
+    def fScore(self):
         '''Permet de modifier le score, puis de changer son affichage dans la fenetre graphique'''
-        self.Totalpts += Newpts
-        self.visuel.score.set('Score actuel: ' + str(self.Totalpts))
+        self.Totpts += self.Newpts
+        self.visuel.score.set('Score actuel: ' + str(self.Totpts))
+        self.Newpts = 0
     
     def fReset(self):
         '''Permet de reset toutes les donnees du jeu, ainsi que l'affichage dans la fenetre graphique'''
