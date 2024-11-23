@@ -30,12 +30,12 @@ class Jeu():
         self.Totpts = 0
 
         #Creation et affichage du joueur
-        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [2, 0])   #Valeurs de tests amener a changer
+        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [5, 0])   #Valeurs de tests amener a changer
         self.visuel.fAffichage(self.joueur)
         
         #Creation de la liste des entitees autres que le joueur
         self.entity = []
-        self.fCreation(-2, 1, 100, [300, 300], (50, 30), [2, 40])
+        
 
     #Creation des methodes
     def fCreation(self, type : int, vie : int, valeur : int, position : list, hitbox : tuple, vitesse : list):

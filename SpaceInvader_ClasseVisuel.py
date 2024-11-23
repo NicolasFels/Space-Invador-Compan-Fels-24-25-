@@ -114,9 +114,9 @@ class Visuel():
     def fDeplace(self, objet, direction : int, sens : int):
         '''Deplace l'objet sur la fenetre'''
         if direction == 0:
-            self.visuel.GameZone.move(objet.id, sens*objet.vitesse[direction], 0)
+            self.GameZone.move(objet.id, sens*objet.vitesse[direction], 0)
         else:
-            self.visuel.GameZone.move(objet.id, 0, sens*objet.vitesse[direction])
+            self.GameZone.move(objet.id, 0, sens*objet.vitesse[direction])
 
     def fSupprimer(self, objet):
         '''Supprime l'objet de l'écran'''
