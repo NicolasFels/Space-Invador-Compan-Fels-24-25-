@@ -14,6 +14,9 @@ Fait: Initialisation du jeu;
 A faire: Realiser methode de tir pour les ennemis;
     reflechir a differentes ameliorations possibles;
 '''
+#Bibliotheque standard
+from random import randint
+
 #Bibliotheque personnelle
 from SpaceInvader_ClasseObjetSpatial import ObjetSpatial
 
@@ -45,6 +48,7 @@ class Jeu():
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
         self.ennemidir = 1
+        self.ennemisspeciauxdir = 1
 
         #Creation des etats de fonctionnement
         self.run = False
@@ -108,7 +112,11 @@ class Jeu():
         '''
         for y in [50, 90, 130, 170, 210, 250, 290, 330]:
             for x in [10, 60, 110, 160, 210, 260, 310, 360, 410]:
-                self.fCreation(-2, 1, 100, [x, y], (25, 30), [5, 10])
+                self.fCreation(-2, 1, 100, [x, y], (25, 30), [10, 10])
+
+    def fCreationEnnemiSpecial(self):
+        '''Apres un certain temps, regarde si la liste des ennemis special est vide et en cree 1'''
+        self.fCreation(-3, 2, 500, [10, 10], (25, 30), (randint(10, 20), 10))
     
     def fCreationBlocs(self):
         '''Creer tous les blocs de protection a des positions precises'''
@@ -143,6 +151,7 @@ class Jeu():
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
         self.ennemidir = 1
+        self.ennemisspeciauxdir = 1
 
         #Creation des etats de fonctionnement
         self.run = False

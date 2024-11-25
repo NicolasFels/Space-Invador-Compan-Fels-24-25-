@@ -15,6 +15,7 @@ A faire: Voir si on modifie l'apparence des boutons;
 '''
 #Bibliotheque standard
 from tkinter import Tk, Canvas, Button, PhotoImage, Menu, Label, StringVar, Toplevel, LabelFrame, Event
+from random import randint
 
 #Bibliotheque personnelle
 from SpaceInvader_ClasseObjetSpatial import ObjetSpatial
@@ -26,7 +27,7 @@ class Visuel():
         '''Initialisation de la fenetre'''
         #Definition des caracteristiques de base de la fenetre
         self.mv = Tk()
-        self.mv.title('Compan and Fels: Space Invaders')
+        self.mv.title('Compan and Fels: Candy Invaders')
         self.mv.geometry('612x700')
 
         #Lien entre le jeu et la fenetre graphique
@@ -224,6 +225,24 @@ class Visuel():
                 self.fDeplace(entity, 1, 1)
             self.mg.ennemidir = 1
     
+    def fMoveEnnemiSpeciaux(self):
+        '''Deplace tous les ennemis speciaux sur le Canvas GameZone selon une direction et un sens precis.
+        -1 a gauche, 1 a droite et suppr si 0'''
+        if self.mg.ennemisspeciaux != [] and self.mg.ennemisspeciauxdir == 1:
+            for entity in self.mg.ennemisspeciaux:
+                self.fDeplace(entity, 0, 1)
+            if self.mg.ennemisspeciaux[0].position[0] + self.mg.ennemisspeciaux[0].hitbox[0] == 602:
+                self.mg.ennemisspeciauxdir = -1
+        elif self.mg.ennemisspeciaux != [] and self.mg.ennemisspeciauxdir == -1:
+            for entity in self.mg.ennemisspeciaux:
+                self.fDeplace(entity, 0, -1)
+            if self.mg.ennemirepere.position[0] == 10:
+                self.mg.ennemisspeciauxdir = 1
+                self.GameZone.delete(self.mg.ennemisspeciaux[0].id)
+                self.mg.entity.remove(self.mg.ennemisspeciaux[0])
+                self.mg.ennemisspeciaux.remove(self.mg.ennemisspeciaux[0])
+                
+
     def fMoveTir(self):
         '''Deplace tous les tir sur le Canvas GameZone sur l'axe y et dans le sens precise dans leur vitesse'''
         for entity in self.mg.tirs:
@@ -238,6 +257,12 @@ class Visuel():
         '''Affiche les blocs de protections au debut du jeu'''
         for blocs in self.mg.blocs:
             self.fAffichage(blocs)
+
+    def fAffichageEnnemiSpeciaux(self):
+        '''Affiche l'ennemi special en haut du Canvas GameZone'''
+        if self.mg.ennemisspeciaux == [] and randint(0,100) == 42:
+            self.mg.fCreationEnnemiSpecial()
+            self.fAffichage(self.mg.ennemisspeciaux[0])
     
     #Methode d'ecoute des inputs du joueur
     def fActionJoueur(self, event):
@@ -262,7 +287,9 @@ class Visuel():
         '''Gere le deroulement d'un tour, puis apres un certain temps se reactive.'''
         if self.mg.gameover == False:
             if self.mg.run == True:
+                self.fAffichageEnnemiSpeciaux()
                 self.mg.fTrouverRepere()
+                self.fMoveEnnemiSpeciaux()
                 self.fMoveEnnemi()
                 self.fMoveTir()
                 self.mg.fCollision(self.mg.joueur)         
