@@ -273,9 +273,11 @@ class Visuel():
             self.fDeplace(self.mg.joueur, 0, -1)
         elif action == 'Right' and self.mg.run == True:
             self.fDeplace(self.mg.joueur, 0, 1)
-        elif action == 'space' and self.mg.run == True:
+        elif action == 'space' and self.mg.run == True and self.mg.tirpossible == True:
+            #self.mg.fTirPossible()
             self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 13, self.mg.joueur.position[1] - 6], (5, 5), [0, -10])
             self.fAffichage(self.mg.tirs[-1])
+            #self.mv.after(2000, self.mg.fTirPossible())
         elif action == 'Return':
             if self.mg.run == True:
                 self.mg.run == False
