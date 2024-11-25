@@ -80,16 +80,23 @@ class Visuel():
         #Apparition du joueur sur le Canvas GameZone
         self.fAffichage(self.mg.joueur)
 
+        #Apparition des blocs de protections
+        self.fAffichageBlocs()
+
         #Apparition des ennemis sur le Canvas
         self.fAffichageVague()
         
         #Creation des evenements
         self.mv.bind('<Key>', self.fActionJoueur)
+        
+        #Lancement du tour
+        self.fGestionTour()
+
         #Lancement de la fenetre
         self.mv.mainloop()
 
     #Creation des methodes
-    #Methode propre aux menus, boutons et labels
+    #Methode de fonctionnement de la fenetre
     def fCreate_regle(self):
         '''Creation d'une fenetre contenant les regles du jeu depuis le MenuPropos'''
         regle = Toplevel(self.mv)
@@ -111,6 +118,7 @@ class Visuel():
         for id in self.entityId:
             self.GameZone.delete(id)
         self.mg.fReset()
+        self.fResetVisuel()
         self.valeurscore = 0
         self.fScore()
 
@@ -124,6 +132,23 @@ class Visuel():
         if self.valeurbestscore < self.valeurscore:
             self.valeurbestscore = self.valeurscore
             self.bestscore.set('Score actuel: ' + str(self.valeurbestscore))
+
+    def fResetVisuel(self):
+        '''Reset le visuel'''
+        #Creation d'une liste des entitees affichee
+        self.entityId = []
+
+        #Apparition du joueur sur le Canvas GameZone
+        self.fAffichage(self.mg.joueur)
+
+        #Apparition des blocs de protections
+        self.fAffichageBlocs()
+
+        #Apparition des ennemis sur le Canvas
+        self.fAffichageVague()
+        
+        #Augmentation du nombre de tour jouer par 100ms (c'est pas fun de reset en boucle donc ça augmente le nombre de tour qui se joue)
+        self.fGestionTour()
     
     #Methodes standards propre au Canvas GameZone
     def fAffichage(self, objet):
@@ -145,34 +170,53 @@ class Visuel():
         '''Deplace l'objet sur le Canvas GameZone selon une direction et un sens precis'''
         if direction == 0:
             self.GameZone.move(objet.id, sens * objet.vitesse[direction], 0)
+            self.mg.fDeplacement(objet, direction, sens)
+            if objet.position[direction] < 10:
+                objet.position[direction] = 10
+                self.GameZone.move(objet.id, - sens * objet.vitesse[direction], 0)
+            elif 602 < objet. position[direction] + objet.hitbox[direction]:
+                objet.position[direction] = 602 - objet.hitbox[direction]
+                self.GameZone.move(objet.id, - sens * objet.vitesse[direction], 0)
         else:
             self.GameZone.move(objet.id, 0, sens * objet.vitesse[direction])
+            self.mg.fDeplacement(objet, direction, sens)
+            if objet.position[direction] < 10:
+                objet.position[direction] = 10
+                self.GameZone.move(objet.id, 0, - sens * objet.vitesse[direction])
+            elif 602 < objet. position[direction] + objet.hitbox[direction]:
+                objet.position[direction] = 602
+                self.GameZone.move(objet.id, 0, - sens * objet.vitesse[direction])
+            if objet.type == -1 and objet.position[direction] in [10, 602]:
+                objet.vie -= 1
     
     def fSupprimer(self, objet):
-        '''Supprime l'objet de l'écran'''
-        self.entityId.remove(objet.id)
-        self.GameZone.delete(objet.id)
+        '''Supprime l'objet de l'écran si sa vie tombe a 0'''
+        self.mg.fSuppression(objet)
+        if objet.vie <= 0:
+            self.entityId.remove(objet.id)
+            self.GameZone.delete(objet.id)
     
     #Methodes avances propre au Canvas GameZone
     def fMoveEnnemi(self):
-        '''Deplace tous les ennemis sur le Canvas GameZone selon une direction et un sens precis'''
-        if self.mg.ennemidir == 0:
+        '''Deplace tous les ennemis sur le Canvas GameZone selon une direction et un sens precis.
+        -1 a gauche, 0 en bas, 1 a droite'''
+        if self.mg.ennemidir == 1:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 0, 1)
-            if self.mg.ennemirepere.position[0] + self.ennemirepere.hitbox[0] == 602:
-                self.mg.ennemidir = 1
-        elif self.mg.ennemidir == 1:
+            if self.mg.ennemirepere.position[0] + self.mg.ennemirepere.hitbox[0] == 602:
+                self.mg.ennemidir = -1
+        elif self.mg.ennemidir == -1:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 0, -1)
             if self.mg.ennemirepere.position[0] == 10:
                 if self.mg.ennemirepere.position[1] + self.mg.ennemirepere.hitbox[1] == 602:
-                    self.mg.ennemidir = 0
+                    self.mg.ennemidir = 1
                 else:
-                    self.mg.ennemidir = 2
-        elif self.mg.ennemidir == 2:
+                    self.mg.ennemidir = 0
+        elif self.mg.ennemidir == 0:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 1, 1)
-            self.mg.ennemidir = 0
+            self.mg.ennemidir = 1
     
     def fMoveTir(self):
         '''Deplace tous les tir sur le Canvas GameZone sur l'axe y et dans le sens precise dans leur vitesse'''
@@ -193,17 +237,35 @@ class Visuel():
     
     #Methode d'ecoute des inputs du joueur
     def fActionJoueur(self, event):
+        '''Determine les actions du personnage joueur en fonction des input du joueur'''
         action = event.keysym
         print(action)
-        if action == 'Left':
-            self.mg.fDeplacement(self.mg.joueur, 0, -1)
+        if action == 'Left' and self.mg.run == True:
             self.fDeplace(self.mg.joueur, 0, -1)
-        elif action == 'Right':
-            self.mg.fDeplacement(self.mg.joueur, 0, 1)
+        elif action == 'Right' and self.mg.run == True:
             self.fDeplace(self.mg.joueur, 0, 1)
-        elif action == 'space':
-            self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 20, self.mg.joueur.position[1] - 6], (5, 5), [0, -10])
+        elif action == 'space' and self.mg.run == True:
+            self.mg.fCreation(-1, 1, 0, [self.mg.joueur.position[0] + 13, self.mg.joueur.position[1] - 6], (5, 5), [0, -10])
             self.fAffichage(self.mg.tirs[-1])
-    
+        elif action == 'Return':
+            if self.mg.run == True:
+                self.mg.run == False
+            else:
+                self.mg.run = True
+
     #Methode gestion du tour
+    def fGestionTour(self):
+        '''Gere le deroulement d'un tour, puis apres un certain temps se reactive.'''
+        if self.mg.gameover == False:
+            if self.mg.run == True:
+                self.mg.fTrouverRepere()
+                self.fMoveEnnemi()
+                self.fMoveTir()
+                self.mg.fCollision(self.mg.joueur)         
+                for entity in self.mg.entity:
+                        self.mg.fCollision(entity)
+                        self.fSupprimer(entity)
+                self.fScore()
+                self.fBestScore()
+        self.mv.after(100, self.fGestionTour)
     

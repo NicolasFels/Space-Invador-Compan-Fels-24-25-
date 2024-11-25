@@ -28,13 +28,14 @@ class Jeu():
         self.Totpts = 0
 
         #Creation et affichage du joueur
-        self.joueur = ObjetSpatial(1, 3, 0, [281, 572], (50, 30), [5, 0])   #Valeurs de tests amener a changer
+        self.joueur = ObjetSpatial(1, 3, 0, [281, 572], (25, 30), [5, 0])   #Valeurs de tests amener a changer
         
         #Creation des listes des entitees autres que le joueur
         self.ennemisspeciaux = []
         self.ennemis = []
         self.tirs = []
         self.blocs = []
+        self.entity = self.ennemisspeciaux + self.ennemis + self.tirs + self.blocs
 
         #Creation des blocs
         self.fCreationBlocs()
@@ -45,7 +46,7 @@ class Jeu():
 
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
-        self.ennemidir = 0
+        self.ennemidir = 1
 
         #Creation des etats de fonctionnement
         self.run = False
@@ -62,26 +63,29 @@ class Jeu():
     
     def fSuppression(self, objet):
         '''Supprime l'objet de la liste des entitees si sa vie tombe a 0 et ajoute ses points a Totpts'''
-        if objet.vie == 0:
+        if objet.vie <= 0:
             self.Totpts += objet.valeur
             self.fActionListe(objet, 'remove')
     
-    def fCollision(self, objet1, objet2):
-        '''Verifie si les hitbox de 2 objet se rencontre, si oui enleve une vie au deux objets'''
+    def fCollision(self, objet):
+        '''Verifie si la hitbox de l'objet rencontre une autre hitbox, si oui enleve une vie aux deux objets'''
         collision = False
-        #Tests s'il y a collision entre 2 objets
-        if objet1.position[0] <= objet2.position[0] and objet2.position[0] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        elif objet1.position[0] <= objet2.position[0] + objet2.taille[0] and objet2.position[0] + objet2.taille[0] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        elif objet1.position[1] <= objet2.position[1] and objet2.position[1] <= objet1.position[1] + objet1.taille[1]:
-            collision = True
-        elif objet1.position[1] <= objet2.position[1] + objet2.taille[1] and objet2.position[1] + objet2.taille[1] <= objet1.position[0] + objet1.taille[0]:
-            collision = True
-        #En cas de collision enleve une vie aux 2 objets
-        if collision == True:
-            objet1.vie -= 1
-            objet2.vie -= 1
+        for entity in self.entity:
+            if entity != objet and entity.position[0] <= objet.position[0] and objet.position[0] <= entity.position[0] + entity.hitbox[0]:
+                if entity.position[1] <= objet.position[1] and objet.position[1] <= entity.position[1] + entity.hitbox[1]:
+                    collision = True
+                elif entity.position[1] <= objet.position[1] + objet.hitbox[1] and objet.position[1] + objet.hitbox[1] <= entity.position[1] + entity.hitbox[1]:
+                    collision = True
+            elif entity != objet and entity.position[0] <= objet.position[0] + objet.hitbox[0] and objet.position[0] + objet.hitbox[0] <= entity.position[0] + entity.hitbox[0]:
+                if entity.position[1] <= objet.position[1] and objet.position[1] <= entity.position[1] + entity.hitbox[1]:
+                    collision = True
+                elif entity.position[1] <= objet.position[1] + objet.hitbox[1] and objet.position[1] + objet.hitbox[1] <= entity.position[1] + entity.hitbox[1]:
+                    collision = True
+            #En cas de collision enleve une vie aux 2 objets
+            if collision == True:
+                objet.vie -= 1
+                entity.vie -= 1
+        
 
     def fDeplacement(self, objet, direction : int, sens : int):
         '''Modifie la position d'un objet en fonction de sa vitesse, de la direction et du sens souhaitee.
@@ -90,39 +94,15 @@ class Jeu():
         '''
         #Deplacement dans les donnees de l'objet
         objet.position[direction] += sens * objet.vitesse[direction]
-        if objet.position[direction] < 0:
-            objet.position[direction] = 0
-        elif 612 < objet. position[direction] + objet.hitbox[direction]:
-            objet.position[direction] = 612
-        if objet.type == -1 and objet.position[direction] in [0, 612]:
-            objet.vie -= 1
 
-    def fTrouverRepere(self, extremum):
+    def fTrouverRepere(self):
         '''Trouve l'ennemi avec la position en x la plus faible ou la plus grande.
-        extremum: -1 pour la gauche, 1 pour la droite 
+        ennemidir: -1 pour la gauche, 1 pour la droite 
         '''
-        for entity in self.ennemis:
-            if extremum * self.ennemirepererepere.position[0] <= extremum * entity.position[0]:
-                self.ennemirepere = entity
-        
-    def fMouvementEnnemi(self):
-        '''Fait se deplacer tous les ennemis dans la base de donnees, en fonction de ennemidir
-        va a droite(0), a gauche(1) ou descend(2)
-        '''
-        if self.ennemidir == 0:
+        if self.ennemidir in [-1, 1]:
             for entity in self.ennemis:
-                self.fDeplacement(entity, 0, 1)
-        elif self.ennemidir == 1:
-            for entity in self.ennemis:
-                self.fDeplacement(entity, 0, -1)
-        elif self.ennemidir == 2:
-            for entity in self.ennemis:
-                self.fDeplacement(entity, 1, 1)
-        
-    def fMouvementTir(self):
-        '''Fait se deplacer les tirs dans la base de donnees'''
-        for entity in self.tirs:
-            self.fDeplacement(entity, 1, 1)
+                if self.ennemidir * self.ennemirepere.position[0] <= self.ennemidir * entity.position[0]:
+                    self.ennemirepere = entity
 
     def fCreationVague(self):
         '''Si la liste des ennemis est vide, creer 8 lignes de 6 ennemis a partir des coordonnees (10, 10).
@@ -130,12 +110,15 @@ class Jeu():
         '''
         if self.besoinVague == True:
             for y in [50, 90, 130, 170, 210, 250, 290, 330]:
-                for x in [10, 90, 170, 250, 330, 410]:
-                    self.fCreation(-2, 1, 100, [x, y], (50, 30), [5, 10])
+                for x in [10, 60, 110, 160, 210, 260, 310, 360, 410]:
+                    self.fCreation(-2, 1, 100, [x, y], (25, 30), [5, 10])
     
     def fCreationBlocs(self):
         '''Creer tous les blocs de protection a des positions precises'''
-        pass
+        for bloc in [60, 260, 460]:
+            for y in [532, 541, 550]:
+                for x in [0, 9, 18, 27, 36, 45, 54, 63, 72, 81]:
+                    self.fCreation(0, 1, 0, [bloc + x, y], (8, 8), [0, 0])
 
     #Methode de fonctionnement
     def fReset(self):
@@ -144,20 +127,25 @@ class Jeu():
         self.Totpts = 0
 
         #Creation et affichage du joueur
-        self.joueur = ObjetSpatial(1, 3, 0, [100, 100], (50, 30), [5, 0])   #Valeurs de tests amener a changer
+        self.joueur = ObjetSpatial(1, 3, 0, [281, 572], (25, 30), [5, 0])   #Valeurs de tests amener a changer
         
         #Creation des listes des entitees autres que le joueur
         self.ennemisspeciaux = []
         self.ennemis = []
         self.tirs = []
         self.blocs = []
+        self.entity = self.ennemisspeciaux + self.ennemis + self.tirs + self.blocs
+
+        #Creation des blocs
+        self.fCreationBlocs()
 
         #Creation de la premiere vague d'ennemi
+        self.besoinVague = True
         self.fCreationVague()
 
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
-        self.ennemidir = 0
+        self.ennemidir = 1
 
         #Creation des etats de fonctionnement
         self.run = False
@@ -177,5 +165,7 @@ class Jeu():
             cible = self.ennemisspeciaux
         if action == 'remove':
             cible.remove(objet)
+            self.entity.remove(objet)
         elif action == 'append':
             cible.append(objet)
+            self.entity.append(objet)
