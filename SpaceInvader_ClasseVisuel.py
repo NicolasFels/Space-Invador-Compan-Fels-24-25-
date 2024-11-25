@@ -1,14 +1,14 @@
 '''
 Nicolas FELS, Nolwenn COMPAN
-Derniere modification: 23/11/2024
+Derniere modification: 25/11/2024
 But: Realiser une classe permettant la creation d'une fenetre graphique de jeu;
 Fait: Initialisation de la fenetre avec tous les parametres actuellement utile;
     methodes des boutons, labels et menus;
     methodes standard propre au Canvas GameZone;
     debut des methodes avances propre au Canvas GameZone;
     methode d'ecoute du clavier fAction;
-A faire: Rajouter les bonnes images pour les ennemi speciaux, les tirs et les blocs;
-    realisation des methode de gestion de tour et d'execution du jeu;
+    toutes les images sont importer;
+A faire: Realisation des methode de gestion de tour et d'execution du jeu;
     voir si on modifie l'apparence des boutons;
     reflechir sur ajout d'option start/stop/reprise du jeu en cours en lien avec la classe Jeu;
     reflechir a differentes ameliorations possibles;
@@ -70,9 +70,9 @@ class Visuel():
         #Creation des apparences des entitees
         self.joueur = PhotoImage(file = 'SpaceInvader_Image/tooth.png')
         self.ennemi = PhotoImage(file = 'SpaceInvader_Image/candy.png')
-        self.ennemispecial = PhotoImage(file = 'SpaceInvader_Image/candy.png')
-        self.tir = PhotoImage(file = 'SpaceInvader_Image/candy.png')            #Changer l'image quand on l'aura
-        self.bloc = PhotoImage(file = 'SpaceInvader_Image/candy.png')           #Changer l'image quand on l'aura
+        self.ennemispecial = PhotoImage(file = 'SpaceInvader_Image/lolipop.png')
+        self.tir = PhotoImage(file = 'SpaceInvader_Image/raisin.png')
+        self.bloc = PhotoImage(file = 'SpaceInvader_Image/chocolate.png')
 
         #Creation d'une liste des entitees affichee
         self.entityId = []
@@ -156,18 +156,26 @@ class Visuel():
     #Methodes avances propre au Canvas GameZone
     def fMoveEnnemi(self):
         '''Deplace tous les ennemis sur le Canvas GameZone selon une direction et un sens precis'''
-        if self.mg.ennemiou == 0:
+        if self.mg.ennemidir == 0:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 0, 1)
-        elif self.mg.ennemiou == 1:
+            if self.mg.ennemirepere.position[0] + self.ennemirepere.hitbox[0] == 602:
+                self.mg.ennemidir = 1
+        elif self.mg.ennemidir == 1:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 0, -1)
-        elif self.mg.ennemiou == 2:
+            if self.mg.ennemirepere.position[0] == 10:
+                if self.mg.ennemirepere.position[1] + self.mg.ennemirepere.hitbox[1] == 602:
+                    self.mg.ennemidir = 0
+                else:
+                    self.mg.ennemidir = 2
+        elif self.mg.ennemidir == 2:
             for entity in self.mg.ennemis:
                 self.fDeplace(entity, 1, 1)
+            self.mg.ennemidir = 0
     
     def fMoveTir(self):
-        '''Deplace tous les tir sur le Canvas GameZone selon une direction et un sens precis'''
+        '''Deplace tous les tir sur le Canvas GameZone sur l'axe y et dans le sens precise dans leur vitesse'''
         for entity in self.mg.tirs:
             self.fDeplace(entity, 1, 1)
 
@@ -177,6 +185,11 @@ class Visuel():
             for entity in self.mg.ennemis:
                 self.fAffichage(entity)
             self.mg.besoinVague = False
+
+    def fAffichageBlocs(self):
+        '''Affiche les blocs de protections au debut du jeu'''
+        for blocs in self.mg.blocs:
+            self.fAffichage(blocs)
     
     #Methode d'ecoute des inputs du joueur
     def fActionJoueur(self, event):

@@ -1,6 +1,6 @@
 '''
 Nicolas FELS, Nolwenn COMPAN
-Derniere modification: 23/11/2024
+Derniere modification: 25/11/2024
 But: Realiser un classe Jeu permettant de generer et gerer les donnees du jeu;
 Fait: Initialisation du jeu;
     methode de creation des entitees;
@@ -36,13 +36,16 @@ class Jeu():
         self.tirs = []
         self.blocs = []
 
+        #Creation des blocs
+        self.fCreationBlocs()
+
         #Creation de la premiere vague d'ennemi
         self.besoinVague = True
         self.fCreationVague()
 
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
-        self.ennemiou = 0
+        self.ennemidir = 0
 
         #Creation des etats de fonctionnement
         self.run = False
@@ -96,30 +99,23 @@ class Jeu():
 
     def fTrouverRepere(self, extremum):
         '''Trouve l'ennemi avec la position en x la plus faible ou la plus grande.
-        extremum: 1 pour la gauche, -1 pour la droite 
+        extremum: -1 pour la gauche, 1 pour la droite 
         '''
         for entity in self.ennemis:
-            if entity.position[0] <= extremum * self.repere.position[0]:
-                self.repere = entity
+            if extremum * self.ennemirepererepere.position[0] <= extremum * entity.position[0]:
+                self.ennemirepere = entity
         
     def fMouvementEnnemi(self):
-        '''Fait se deplacer tous les ennemis dans la base de donnees, en fonction de ennemiou
+        '''Fait se deplacer tous les ennemis dans la base de donnees, en fonction de ennemidir
         va a droite(0), a gauche(1) ou descend(2)
         '''
-        if self.ennemiou == 0:
+        if self.ennemidir == 0:
             for entity in self.ennemis:
                 self.fDeplacement(entity, 0, 1)
-            if self.ennemirepere.position[0] + self.ennemirepere.hitbox[0] == 602:
-                self.ennemiou = 1
-        elif self.ennemiou == 1:
+        elif self.ennemidir == 1:
             for entity in self.ennemis:
                 self.fDeplacement(entity, 0, -1)
-            if self.ennemirepere.position[0] == 10:
-                if self.ennemirepere.position[1] + self.ennemirepere.hitbox[1] == 602:
-                    self.ennemiou = 0
-                else:
-                    self.ennemiou = 2
-        elif self.ennemiou == 2:
+        elif self.ennemidir == 2:
             for entity in self.ennemis:
                 self.fDeplacement(entity, 1, 1)
         
@@ -136,6 +132,10 @@ class Jeu():
             for y in [50, 90, 130, 170, 210, 250, 290, 330]:
                 for x in [10, 90, 170, 250, 330, 410]:
                     self.fCreation(-2, 1, 100, [x, y], (50, 30), [5, 10])
+    
+    def fCreationBlocs(self):
+        '''Creer tous les blocs de protection a des positions precises'''
+        pass
 
     #Methode de fonctionnement
     def fReset(self):
@@ -157,7 +157,7 @@ class Jeu():
 
         #Creation des reperes de mmouvements ennemis
         self.ennemirepere = self.ennemis[0]
-        self.ennemiou = 0
+        self.ennemidir = 0
 
         #Creation des etats de fonctionnement
         self.run = False
