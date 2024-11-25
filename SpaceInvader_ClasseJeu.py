@@ -41,7 +41,6 @@ class Jeu():
         self.fCreationBlocs()
 
         #Creation de la premiere vague d'ennemi
-        self.besoinVague = True
         self.fCreationVague()
 
         #Creation des reperes de mmouvements ennemis
@@ -108,10 +107,9 @@ class Jeu():
         '''Si la liste des ennemis est vide, creer 8 lignes de 6 ennemis a partir des coordonnees (10, 10).
         Chaque ennemi est espace de 30 avec son voisin et chaque ligne de 10.
         '''
-        if self.besoinVague == True:
-            for y in [50, 90, 130, 170, 210, 250, 290, 330]:
-                for x in [10, 60, 110, 160, 210, 260, 310, 360, 410]:
-                    self.fCreation(-2, 1, 100, [x, y], (25, 30), [5, 10])
+        for y in [50, 90, 130, 170, 210, 250, 290, 330]:
+            for x in [10, 60, 110, 160, 210, 260, 310, 360, 410]:
+                self.fCreation(-2, 1, 100, [x, y], (25, 30), [5, 10])
     
     def fCreationBlocs(self):
         '''Creer tous les blocs de protection a des positions precises'''
@@ -169,3 +167,10 @@ class Jeu():
         elif action == 'append':
             cible.append(objet)
             self.entity.append(objet)
+
+    def fGameOver(self):
+        '''Verifie si le joueur a encore des vies ou non, s'il n'en a plus
+        change la valeur de gameover en True'''
+        if self.joueur.vie <= 0:
+            self.gameover = True
+            print('GAME OVER')

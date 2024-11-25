@@ -41,8 +41,10 @@ class Visuel():
         self.valeurbestscore = 0
         self.score = StringVar()
         self.bestscore = StringVar()
-        self.labelScore = Label(self.mv, textvariable = self.score)             #Amener a changer selon comment est gerer le score
-        self.labelBestScore = Label(self.mv, textvariable = self.bestscore)     #Amener a changer selon comment est gerer le score
+        self.fScore()
+        self.fBestScore()
+        self.labelScore = Label(self.mv, textvariable = self.score)     
+        self.labelBestScore = Label(self.mv, textvariable = self.bestscore)
 
         #Creation du menu
         self.MenuBar = Menu(self.mv)
@@ -64,8 +66,8 @@ class Visuel():
         self.GameZone.pack(side = "bottom")
         self.buttonNewGame.pack(side = "left", pady = 10, padx = 30)
         self.buttonQuit.pack(side = "right", pady = 10, padx = 30)
-        self.labelScore.pack(side = 'top', pady =30)
-        self.labelBestScore.pack(side = 'top', padx = 20)                       #Amener a changer en fonction du rendu
+        self.labelScore.pack(side = 'top', pady =10)
+        self.labelBestScore.pack(side = 'top')                       #Amener a changer en fonction du rendu
 
         #Creation des apparences des entitees
         self.joueur = PhotoImage(file = 'SpaceInvader_Image/tooth.png')
@@ -131,10 +133,14 @@ class Visuel():
         '''Modifie le meilleur score en temps reel s'il est inferieur au score actuel du joueur'''
         if self.valeurbestscore < self.valeurscore:
             self.valeurbestscore = self.valeurscore
-            self.bestscore.set('Score actuel: ' + str(self.valeurbestscore))
+            self.bestscore.set('Best score: ' + str(self.valeurbestscore))
 
     def fResetVisuel(self):
         '''Reset le visuel'''
+        #Creation des labels de score
+        self.valeurscore = 0
+        self.fScore()
+
         #Creation d'une liste des entitees affichee
         self.entityId = []
 
@@ -225,10 +231,8 @@ class Visuel():
 
     def fAffichageVague(self):
         '''Affiche tous les ennemis de la nouvelle vague sur le Canvas GameZone'''
-        if self.mg.besoinVague == True:
-            for entity in self.mg.ennemis:
-                self.fAffichage(entity)
-            self.mg.besoinVague = False
+        for entity in self.mg.ennemis:
+            self.fAffichage(entity)
 
     def fAffichageBlocs(self):
         '''Affiche les blocs de protections au debut du jeu'''
@@ -267,5 +271,9 @@ class Visuel():
                         self.fSupprimer(entity)
                 self.fScore()
                 self.fBestScore()
+                self.mg.fGameOver()
+                if self.mg.ennemis == []:
+                    self.mg.fCreationVague()
+                    self.fAffichageVague()
         self.mv.after(100, self.fGestionTour)
     
