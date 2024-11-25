@@ -8,9 +8,9 @@ Fait: Initialisation de la fenetre avec tous les parametres actuellement utile;
     debut des methodes avances propre au Canvas GameZone;
     methode d'ecoute du clavier fAction;
     toutes les images sont importer;
-A faire: Realisation des methode de gestion de tour et d'execution du jeu;
-    voir si on modifie l'apparence des boutons;
-    reflechir sur ajout d'option start/stop/reprise du jeu en cours en lien avec la classe Jeu;
+    methode start and stop;
+    methode gestion de tour ( avec un pb sur les collisions);
+A faire: Voir si on modifie l'apparence des boutons;
     reflechir a differentes ameliorations possibles;
 '''
 #Bibliotheque standard

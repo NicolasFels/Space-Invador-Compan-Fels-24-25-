@@ -10,9 +10,8 @@ Fait: Initialisation du jeu;
     methode de mouvement des ennemis et des tirs;
     methode pour gerer les collisions;
     methode pour reset les donnees du jeu;
-A faire: Realiser les methodes de gestion de tour et d'excecution du jeu;
-    realiser methode de tir pour les ennemis;
-    reflechir sur option de start/stop/reprise du jeu;
+    methode pour game over;
+A faire: Realiser methode de tir pour les ennemis;
     reflechir a differentes ameliorations possibles;
 '''
 #Bibliotheque personnelle
@@ -173,4 +172,5 @@ class Jeu():
         change la valeur de gameover en True'''
         if self.joueur.vie <= 0:
             self.gameover = True
+            self.run = False
             print('GAME OVER')
