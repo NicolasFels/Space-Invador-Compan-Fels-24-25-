@@ -67,8 +67,8 @@ class Jeu():
     
     def fCollision(self, objet):
         '''Verifie si la hitbox de l'objet rencontre une autre hitbox, si oui enleve une vie aux deux objets'''
-        collision = False
         for entity in self.entity:
+            collision = False
             if entity != objet and entity.position[0] <= objet.position[0] and objet.position[0] <= entity.position[0] + entity.hitbox[0]:
                 if entity.position[1] <= objet.position[1] and objet.position[1] <= entity.position[1] + entity.hitbox[1]:
                     collision = True
