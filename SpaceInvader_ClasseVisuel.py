@@ -106,7 +106,7 @@ class Visuel():
         regle.title('Regles du jeu')
         TitreRegle = LabelFrame(regle, text = "Regles du jeu", padx = 20, pady = 20)
         TitreRegle.pack(fill = 'both', expand = 'yes')
-        Label(TitreRegle, text = "Vous savez jouer, non ?").pack()
+        Label(TitreRegle, text = "Tirez sur les Sucreries afin de les faire disparaître avant que celles-ci atteignent votre Dent. Protégez-vous à l'aide des tablettes de chocolat !").pack()
 
     def fCreate_nous(self):
         '''Creation d'une fenetre contenant des informations sur nous depuis le MenuPropos'''
@@ -114,7 +114,7 @@ class Visuel():
         nous.title('A propos de nous')
         TitreRegle = LabelFrame(nous, text = "A propos de nous", padx = 20, pady = 20)
         TitreRegle.pack(fill = 'both', expand = 'yes')
-        Label(TitreRegle, text = "Nico et Nono").pack()
+        Label(TitreRegle, text = "Créé par COMPAN Nolwenn et FELS Nicolas").pack()
 
     def fNewGame(self):
         '''Associer au bouton NEWGAME, met la valeur True au parametre NewGame.'''
