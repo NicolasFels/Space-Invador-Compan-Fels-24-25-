@@ -53,6 +53,7 @@ class Jeu():
         #Creation des etats de fonctionnement
         self.run = False
         self.gameover = False
+        self.tirpossible = True
 
     #Creation des methodes
     #Methodes de gestion des entitees
@@ -183,3 +184,10 @@ class Jeu():
             self.gameover = True
             self.run = False
             print('GAME OVER')
+
+    def fTirPossible(self):
+        '''Active ou desactive la possibilite de tir'''
+        if self.tirpossible == True:
+            self.tirpossible = False
+        else:
+            self.tirpossible = True
