@@ -106,6 +106,17 @@ class Visuel():
         TitreRegle = LabelFrame(regle, text = "Regles du jeu", padx = 20, pady = 20)
         TitreRegle.pack(fill = 'both', expand = 'yes')
         Label(TitreRegle, text = "Tirez sur les Sucreries afin de les faire disparaître avant que celles-ci atteignent votre Dent. Protégez-vous à l'aide des tablettes de chocolat !").pack()
+        Label(TitreRegle, text = "Votre dent possède trois vies et en perd une a chaque contact avec une sucrerie ennemi. De plus l'élimination d'une sucrerie classique vous ocroiera").pack()
+        Label(TitreRegle, text = "100 points, celle d'une sucrerie spéciale le DOUBLE. Mais faites attention les sucreries n'en finissent pas d'apparaître et elle deviennent de plus").pack()
+        Label(TitreRegle, text = "en plus savoureuse ! A chauqe vague détruite le nombre de vie des sucreries classiques augmentent, à vous de voir jusqu'où vous pourrez protéger votre dent.").pack()
+        Commande = LabelFrame(regle, text = "Commandes", padx = 20, pady = 20)
+        Commande.pack(fill = 'both', expand = 'yes')
+        Label(Commande, text = "- utiliser les flèches directionnelles pour vous déplacer (le joueur ne se déplace que à gauche ou à droite)").pack()
+        Label(Commande, text = "- utiliser la barre espace pour tirer").pack()
+        Label(Commande, text = "- utiliser la touche entrée (Return pour tkinter) pour mettre le jeu en pause et le lancer au début").pack()
+        
+        
+        
 
     def fCreate_nous(self):
         '''Creation d'une fenetre contenant des informations sur nous depuis le MenuPropos'''
