@@ -43,6 +43,7 @@ class Jeu():
         self.fCreationBlocs()
 
         #Creation de la premiere vague d'ennemi
+        self.nombrevague = 1
         self.fCreationVague()
 
         #Creation des reperes de mmouvements ennemis
@@ -66,14 +67,15 @@ class Jeu():
     
     def fSuppression(self, objet):
         '''Supprime l'objet de la liste des entitees si sa vie tombe a 0 et ajoute ses points a Totpts'''
-        if objet.vie <= 0:
-            self.Totpts += objet.valeur
-            self.fActionListe(objet, 'remove')
+        if objet.vie <= 0:                          #Regarde si l'entitee a encore des vies
+            self.Totpts += objet.valeur             #Si l'entitee n'a plus de vie ajoute son score au points du joueur
+            self.fActionListe(objet, 'remove')      #La supprime des listes ou elle apparait
     
     def fCollision(self, objet):
         '''Verifie si la hitbox de l'objet rencontre une autre hitbox, si oui enleve une vie aux deux objets'''
         for entity in self.entity:
             collision = False
+            #Regarde si l'objet dont ont regarde les collisions est differente de l'entitee et si leur hitbox se chevauchent
             if entity != objet and entity.position[0] <= objet.position[0] and objet.position[0] <= entity.position[0] + entity.hitbox[0]:
                 if entity.position[1] <= objet.position[1] and objet.position[1] <= entity.position[1] + entity.hitbox[1]:
                     collision = True
@@ -111,9 +113,12 @@ class Jeu():
         '''Si la liste des ennemis est vide, creer 8 lignes de 6 ennemis a partir des coordonnees (10, 10).
         Chaque ennemi est espace de 30 avec son voisin et chaque ligne de 10.
         '''
+        #Cree une vague d'ennemi classique, leur vie correspond au nombre de vague ayant ete cree dans ce jeu
         for y in [50, 90, 130, 170, 210, 250, 290, 330]:
             for x in [10, 60, 110, 160, 210, 260, 310, 360, 410]:
-                self.fCreation(-2, 1, 100, [x, y], (25, 30), [10, 10])
+                self.fCreation(-2, 1 * self.nombrevague, 100, [x, y], (25, 30), [10, 10])
+        #Augmente le nombre de vague pour la prochaine vague
+        self.nombrevague += 1
 
     def fCreationEnnemiSpecial(self):
         '''Apres un certain temps, regarde si la liste des ennemis special est vide et en cree 1'''
@@ -121,6 +126,7 @@ class Jeu():
     
     def fCreationBlocs(self):
         '''Creer tous les blocs de protection a des positions precises'''
+        #Cree trois zones de protection
         for bloc in [60, 260, 460]:
             for y in [532, 541, 550]:
                 for x in [0, 9, 18, 27, 36, 45, 54, 63, 72, 81]:
@@ -146,7 +152,7 @@ class Jeu():
         self.fCreationBlocs()
 
         #Creation de la premiere vague d'ennemi
-        self.besoinVague = True
+        self.nombrevague = 1
         self.fCreationVague()
 
         #Creation des reperes de mmouvements ennemis
@@ -157,11 +163,13 @@ class Jeu():
         #Creation des etats de fonctionnement
         self.run = False
         self.gameover = False
+        self.tirpossible = True
     
     def fActionListe(self, objet, action):
         '''Permet en fonction de l'action choisit ('remove' ou 'append') d'ajouter ou
         d'enlever l'objet a la liste correspondante a son type'''
         cible = self.ennemis
+        #Test le type de l'entitee pour savoir ou agir
         if objet.type == 0:
             cible = self.blocs
         elif objet.type == -1:
@@ -170,6 +178,7 @@ class Jeu():
             cible = self.ennemis
         elif objet.type == -3:
             cible = self.ennemisspeciaux
+        #Regarde quel action est demande et l'effectue dans la liste correspondante au type de l'entitee et dans celle de toutes les entitees
         if action == 'remove':
             cible.remove(objet)
             self.entity.remove(objet)
