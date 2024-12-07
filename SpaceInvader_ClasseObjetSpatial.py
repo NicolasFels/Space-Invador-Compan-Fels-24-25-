@@ -13,7 +13,7 @@ class ObjetSpatial():
     '''Regroupe les caracteristiques et methodes communes a tous les objets spatiaux'''
     def __init__(self, type : int, vie : int, valeur : int, position : list, hitbox : tuple, vitesse : list):
         '''Initialisation des caracteristiques communes a tous les objets spatiaux.
-        type: -3 ennemi speciaux, -2 ennemi, -1 tir, 0 bloc neutre, 1 joueur
+        type: -3 ennemi special, -2 ennemi, -1 tir, 0 bloc neutre, 1 joueur
         vie: le nombre de tirs ou contatcs necessaires a detruire l'objet
         valeur: les points a ajouter au score quand l'objet est detruit
         position: une liste de la position du pixel haut gauche de l'objet [x, y]
